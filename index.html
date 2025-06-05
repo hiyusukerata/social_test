@@ -40,34 +40,56 @@
     <style>
       :where([class^="ri-"])::before { content: "\f3c2"; }
       body {
-          font-family: 'Noto Sans JP', sans-serif;
+      font-family: 'Noto Sans JP', sans-serif;
+      }
+      @media (max-width: 768px) {
+        .text-3xl {
+          font-size: 1.5rem;
+        }
+        .text-2xl {
+          font-size: 1.25rem;
+        }
+        .p-6 {
+          padding: 1rem;
+        }
+        .gap-6 {
+          gap: 1rem;
+        }
       }
       .sidebar-item:hover {
-          background-color: rgba(26, 115, 232, 0.1);
+      background-color: rgba(26, 115, 232, 0.1);
       }
       .sidebar-item.active {
-          background-color: rgba(26, 115, 232, 0.1);
-          color: #1a73e8;
-          border-left: 3px solid #1a73e8;
+      background-color: rgba(26, 115, 232, 0.1);
+      color: #1a73e8;
+      border-left: 3px solid #1a73e8;
       }
       .sidebar-item.active i {
-          color: #1a73e8;
+      color: #1a73e8;
       }
       input[type="number"]::-webkit-inner-spin-button,
       input[type="number"]::-webkit-outer-spin-button {
-          -webkit-appearance: none;
-          margin: 0;
+      -webkit-appearance: none;
+      margin: 0;
       }
     </style>
   </head>
-  <body class="bg-gray-50 flex h-screen overflow-hidden">
+  <body class="bg-gray-50 flex h-screen overflow-hidden relative">
     <!-- サイドバー -->
-    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col h-full">
+    <aside
+      class="w-64 bg-white border-r border-gray-200 flex flex-col h-full transition-transform duration-300 lg:translate-x-0 -translate-x-full fixed lg:relative z-30"
+      id="sidebar"
+    >
+      <button
+        id="closeSidebar"
+        class="lg:hidden absolute right-4 top-4 text-gray-500"
+      >
+        <i class="ri-close-line text-xl"></i>
+      </button>
       <div class="p-4 border-b border-gray-200 flex items-center">
         <div class="font-['Pacifico'] text-xl text-primary">logo</div>
-        <span class="ml-2 text-sm text-gray-600">ビジネスサービス</span>
+        <span class="ml-2 text-sm text-gray-600">SNS支援デモ</span>
       </div>
-
       <nav class="flex-1 overflow-y-auto">
         <ul class="py-2">
           <li>
@@ -293,7 +315,6 @@
           </li>
         </ul>
       </nav>
-
       <div class="p-4 border-t border-gray-200">
         <div class="flex items-center">
           <div
@@ -305,9 +326,14 @@
         </div>
       </div>
     </aside>
-
     <!-- メインコンテンツ -->
-    <main class="flex-1 flex flex-col overflow-hidden">
+    <main class="flex-1 flex flex-col overflow-hidden w-full">
+      <button
+        id="openSidebar"
+        class="lg:hidden fixed left-4 top-4 z-20 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center"
+      >
+        <i class="ri-menu-line text-xl"></i>
+      </button>
       <!-- ヘッダー -->
       <header
         class="bg-white border-b border-gray-200 py-3 px-6 flex justify-between items-center"
@@ -341,7 +367,6 @@
           </div>
         </div>
       </header>
-
       <!-- コンテンツエリア -->
       <div class="flex-1 overflow-y-auto p-6 bg-gray-50">
         <!-- 通知バナー -->
@@ -360,9 +385,8 @@
             カスタマイズする
           </button>
         </div>
-
         <!-- メトリクスサマリー -->
-        <div class="grid grid-cols-3 gap-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
           <div class="bg-white border border-gray-200 rounded p-5">
             <div class="flex justify-between items-center mb-4">
               <h3 class="text-sm font-medium text-gray-500">総閲覧数</h3>
@@ -415,9 +439,8 @@
             </div>
           </div>
         </div>
-
         <!-- グラフセクション -->
-        <div class="grid grid-cols-3 gap-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
           <!-- メインチャート -->
           <div class="col-span-2 bg-white border border-gray-200 rounded p-5">
             <div class="flex justify-between items-center mb-4">
@@ -437,7 +460,6 @@
               </button>
             </div>
           </div>
-
           <!-- サイドチャート -->
           <div class="bg-white border border-gray-200 rounded p-5">
             <div class="flex justify-between items-center mb-4">
@@ -476,7 +498,7 @@
           </div>
         </div>
         <!-- 下部グラフセクション -->
-        <div class="grid grid-cols-2 gap-6 mb-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <!-- 左側チャート -->
           <div class="bg-white border border-gray-200 rounded p-5">
             <div class="flex justify-between items-center mb-4">
@@ -517,7 +539,6 @@
               </button>
             </div>
           </div>
-
           <!-- 右側チャート -->
           <div class="bg-white border border-gray-200 rounded p-5">
             <div class="flex justify-between items-center mb-4">
@@ -587,7 +608,6 @@
             カスタマイズする
           </button>
         </div>
-
         <!-- アプリダウンロード -->
         <div class="bg-white border border-gray-200 rounded p-6 text-center">
           <h3 class="text-base font-medium mb-2">Socialアナリティクスアプリ</h3>
@@ -613,9 +633,28 @@
         </div>
       </div>
     </main>
-
     <script id="charts-initialization">
       document.addEventListener("DOMContentLoaded", function () {
+        const sidebar = document.getElementById("sidebar");
+        const openSidebarBtn = document.getElementById("openSidebar");
+        const closeSidebarBtn = document.getElementById("closeSidebar");
+        openSidebarBtn.addEventListener("click", () => {
+          sidebar.classList.remove("-translate-x-full");
+        });
+        closeSidebarBtn.addEventListener("click", () => {
+          sidebar.classList.add("-translate-x-full");
+        });
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener("click", (e) => {
+          if (
+            window.innerWidth < 1024 &&
+            !sidebar.contains(e.target) &&
+            !openSidebarBtn.contains(e.target) &&
+            !sidebar.classList.contains("-translate-x-full")
+          ) {
+            sidebar.classList.add("-translate-x-full");
+          }
+        });
         // エンゲージメントチャート
         const engagementChart = echarts.init(
           document.getElementById("engagement-chart"),
@@ -741,7 +780,6 @@
           ],
         };
         engagementChart.setOption(engagementOption);
-
         // パフォーマンスチャート
         const performanceChart = echarts.init(
           document.getElementById("performance-chart"),
@@ -826,7 +864,6 @@
           ],
         };
         performanceChart.setOption(performanceOption);
-
         // 投稿チャート
         const postsChart = echarts.init(document.getElementById("posts-chart"));
         const postsOption = {
@@ -923,7 +960,6 @@
           ],
         };
         postsChart.setOption(postsOption);
-
         // フォロワーチャート
         const followersChart = echarts.init(
           document.getElementById("followers-chart"),
@@ -1026,7 +1062,6 @@
           ],
         };
         followersChart.setOption(followersOption);
-
         // ウィンドウリサイズ時にチャートをリサイズ
         window.addEventListener("resize", function () {
           engagementChart.resize();
